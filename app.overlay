@@ -1,0 +1,175 @@
+/* vim: set filetype=dts : */
+
+/*
+* Copyright (c) 2021 Nordic Semiconductor ASA
+*
+* SPDX-License-Identifier: Apache-2.0
+*/
+
+/ {
+    chosen {
+        zephyr,console = &cdc_acm_uart6;
+        zephyr,shell-uart = &cdc_acm_uart6;
+    };
+
+    aliases {
+        watchdog0 = &wdt0;
+    };
+};
+
+&zephyr_udc0 {
+    cdc_acm_uart0: cdc_acm_uart0 {
+        compatible = "zephyr,cdc-acm-uart";
+        label = "Zephyr USB CDC-ACM 0";
+    };
+
+    cdc_acm_uart1: cdc_acm_uart1 {
+        compatible = "zephyr,cdc-acm-uart";
+        label = "Zephyr USB CDC-ACM 1";
+    };
+
+    cdc_acm_uart2: cdc_acm_uart2 {
+        compatible = "zephyr,cdc-acm-uart";
+        label = "Zephyr USB CDC-ACM 2";
+    };
+
+    cdc_acm_uart3: cdc_acm_uart3 {
+        compatible = "zephyr,cdc-acm-uart";
+        label = "Zephyr USB CDC-ACM 3";
+    };
+
+    cdc_acm_uart4: cdc_acm_uart4 {
+        compatible = "zephyr,cdc-acm-uart";
+        label = "Zephyr USB CDC-ACM 4";
+    };
+
+    cdc_acm_uart5: cdc_acm_uart5 {
+        compatible = "zephyr,cdc-acm-uart";
+        label = "Zephyr USB CDC-ACM 5";
+    };
+
+    cdc_acm_uart6: cdc_acm_uart6 {
+        compatible = "zephyr,cdc-acm-uart";
+        label = "Zephyr USB CDC-ACM 6 (log)";
+    };
+};
+
+
+&pinctrl {
+    uart1_default: uart1_default {
+        group1 {
+            pinmux = <UART1_TX_P4>;
+        };
+        group2 {
+            pinmux = <UART1_RX_P5>;
+            input-enable;
+            bias-pull-up;
+        };
+    };
+
+    pio0_uart0_default: pio0_uart0_default {
+        rx_pins {
+            pinmux = <PIO0_P2>;
+            input-enable;
+            bias-pull-up;
+        };
+        tx_pins {
+            pinmux = <PIO0_P3>;
+        };
+    };
+
+    pio0_uart1_default: pio0_uart1_default {
+        rx_pins {
+            pinmux = <PIO0_P6>;
+            input-enable;
+            bias-pull-up;
+        };
+        tx_pins {
+            pinmux = <PIO0_P7>;
+        };
+    };
+
+    pio1_uart0_default: pio1_uart0_default {
+        rx_pins {
+            pinmux = <PIO1_P8>;
+            input-enable;
+            bias-pull-up;
+        };
+        tx_pins {
+            pinmux = <PIO1_P9>;
+        };
+    };
+
+    pio1_uart1_default: pio1_uart1_default {
+        rx_pins {
+            pinmux = <PIO1_P10>;
+            input-enable;
+            bias-pull-up;
+        };
+        tx_pins {
+            pinmux = <PIO1_P11>;
+        };
+    };
+
+};
+
+&pio0 {
+    status = "okay";
+
+    pio0_uart0: uart0 {
+        pinctrl-0 = <&pio0_uart0_default>;
+        pinctrl-names = "default";
+
+        compatible = "raspberrypi,pico-uart-pio";
+        current-speed = <115200>;
+        status = "okay";
+    };
+
+    pio0_uart1: uart1 {
+        pinctrl-0 = <&pio0_uart1_default>;
+        pinctrl-names = "default";
+
+        compatible = "raspberrypi,pico-uart-pio";
+        current-speed = <115200>;
+        status = "okay";
+    };
+};
+
+&pio1 {
+    status = "okay";
+
+    pio1_uart0: uart0 {
+        pinctrl-0 = <&pio1_uart0_default>;
+        pinctrl-names = "default";
+
+        compatible = "raspberrypi,pico-uart-pio";
+        current-speed = <115200>;
+        status = "okay";
+    };
+
+    pio1_uart1: uart1 {
+        pinctrl-0 = <&pio1_uart1_default>;
+        pinctrl-names = "default";
+
+        compatible = "raspberrypi,pico-uart-pio";
+        current-speed = <115200>;
+        status = "okay";
+    };
+};
+
+
+&uart0 {
+    current-speed = <115200>;
+    /* pins: P0 Tx, P1 Rx */
+};
+
+&uart1 {
+    current-speed = <115200>;
+    status = "okay";
+    pinctrl-0 = <&uart1_default>;
+    pinctrl-names = "default";
+};
+
+&wdt0 {
+    status = "okay";
+};
