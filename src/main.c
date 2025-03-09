@@ -36,18 +36,21 @@ struct serial_channel {
 };
 
 struct serial_channel serial_channels[] = {
-    { .dev = DEVICE_DT_GET(DT_NODELABEL(cdc_acm_uart0)), },
+    // masters
+    { .dev = DEVICE_DT_GET(DT_NODELABEL(cdc_acm_uart0)), },  // master 1
     { .dev = DEVICE_DT_GET(DT_NODELABEL(cdc_acm_uart1)), },
     { .dev = DEVICE_DT_GET(DT_NODELABEL(cdc_acm_uart2)), },
     { .dev = DEVICE_DT_GET(DT_NODELABEL(cdc_acm_uart3)), },
     { .dev = DEVICE_DT_GET(DT_NODELABEL(cdc_acm_uart4)), },
     { .dev = DEVICE_DT_GET(DT_NODELABEL(cdc_acm_uart5)), },
-    { .dev = DEVICE_DT_GET(DT_NODELABEL(uart0)), },
+    // slaves
+    { .dev = DEVICE_DT_GET(DT_NODELABEL(uart0)), },  // slave 1
     { .dev = DEVICE_DT_GET(DT_NODELABEL(pio0_uart0)), },
     { .dev = DEVICE_DT_GET(DT_NODELABEL(uart1)), },
     { .dev = DEVICE_DT_GET(DT_NODELABEL(pio0_uart1)), },
     { .dev = DEVICE_DT_GET(DT_NODELABEL(pio1_uart0)), },
     { .dev = DEVICE_DT_GET(DT_NODELABEL(pio1_uart1)), },
+    // Master n is connected to slave n.
 };
 
 const unsigned n_ch_pairs = ARRAY_SIZE(serial_channels)/2;
