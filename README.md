@@ -1,4 +1,4 @@
-# MutliCDC
+# MultiCDC
 This is a simple RP2040-based 6-channel USB to UART converter.
 
 This is my first project using the Zephyr RTOS, so there might be lots of
