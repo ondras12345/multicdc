@@ -30,7 +30,7 @@ Pin map (most of these can be changed arbitrarily):
 | P8  | Tx4      |
 | P9  | Rx4      |
 | P10 | Tx5      |
-| P11 | Tx5      |
+| P11 | Rx5      |
 
 
 ## Build
