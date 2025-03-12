@@ -16,6 +16,22 @@ Unfortunately, the `pico-uart-pio` driver doesn't allow changing the baud
 rate at runtime. For this reason, baud rates (`current-speed`) for those
 channels need to be set in the device tree (`app.overlay`).
 
+Pin map (most of these can be changed arbitrarily):
+| pin | function |
+|:---:|:--------:|
+| P0  | Tx0      |
+| P1  | Rx0      |
+| P2  | Tx1      |
+| P3  | Rx1      |
+| P4  | Tx2      |
+| P5  | Rx2      |
+| P6  | Tx3      |
+| P7  | Rx3      |
+| P8  | Tx4      |
+| P9  | Rx4      |
+| P10 | Tx5      |
+| P11 | Tx5      |
+
 
 ## Build
 ```sh

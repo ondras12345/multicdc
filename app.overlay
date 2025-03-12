@@ -69,45 +69,45 @@
 
     pio0_uart0_default: pio0_uart0_default {
         rx_pins {
-            pinmux = <PIO0_P2>;
+            pinmux = <PIO0_P3>;
             input-enable;
             bias-pull-up;
         };
         tx_pins {
-            pinmux = <PIO0_P3>;
+            pinmux = <PIO0_P2>;
         };
     };
 
     pio0_uart1_default: pio0_uart1_default {
         rx_pins {
-            pinmux = <PIO0_P6>;
+            pinmux = <PIO0_P7>;
             input-enable;
             bias-pull-up;
         };
         tx_pins {
-            pinmux = <PIO0_P7>;
+            pinmux = <PIO0_P6>;
         };
     };
 
     pio1_uart0_default: pio1_uart0_default {
         rx_pins {
-            pinmux = <PIO1_P8>;
+            pinmux = <PIO1_P9>;
             input-enable;
             bias-pull-up;
         };
         tx_pins {
-            pinmux = <PIO1_P9>;
+            pinmux = <PIO1_P8>;
         };
     };
 
     pio1_uart1_default: pio1_uart1_default {
         rx_pins {
-            pinmux = <PIO1_P10>;
+            pinmux = <PIO1_P11>;
             input-enable;
             bias-pull-up;
         };
         tx_pins {
-            pinmux = <PIO1_P11>;
+            pinmux = <PIO1_P10>;
         };
     };
 
