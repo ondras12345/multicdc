@@ -1,0 +1,10 @@
+*.gbr
+*.gbrjob
+*.drl
+
+# pcb2gcode
+*.ngc
+*.svg
+pcb2gcode*.log
+stencil-pcb2gcode*.log
+stencil-back.ngc.orig

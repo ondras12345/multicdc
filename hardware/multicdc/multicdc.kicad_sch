@@ -5306,16 +5306,6 @@
 		)
 		(uuid "3c5e45cd-94ea-4344-a213-d3dc841c7682")
 	)
-	(text "TODO extra pin headers for wire wrapping isolated power"
-		(exclude_from_sim no)
-		(at 233.172 149.606 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "77bb1490-12c9-4882-97a4-b97def7911d7")
-	)
 	(label "UART3_VCC"
 		(at 130.81 96.52 0)
 		(effects

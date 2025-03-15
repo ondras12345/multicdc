@@ -83,11 +83,11 @@
 		(aux_axis_origin 63.5 127)
 		(grid_origin 63.5 127)
 		(pcbplotparams
-			(layerselection 0x00010fc_ffffffff)
+			(layerselection 0x0001024_fffffffe)
 			(plot_on_all_layers_selection 0x0000000_00000000)
 			(disableapertmacros no)
 			(usegerberextensions no)
-			(usegerberattributes yes)
+			(usegerberattributes no)
 			(usegerberadvancedattributes yes)
 			(creategerberjobfile yes)
 			(dashed_line_dash_ratio 12.000000)
@@ -96,7 +96,7 @@
 			(plotframeref no)
 			(viasonmask no)
 			(mode 1)
-			(useauxorigin no)
+			(useauxorigin yes)
 			(hpglpennumber 1)
 			(hpglpenspeed 20)
 			(hpglpendiameter 15.000000)
@@ -115,9 +115,9 @@
 			(subtractmaskfromsilk no)
 			(outputformat 1)
 			(mirror no)
-			(drillshape 1)
+			(drillshape 0)
 			(scaleselection 1)
-			(outputdirectory "")
+			(outputdirectory "gerber/")
 		)
 	)
 	(net 0 "")
@@ -175,7 +175,7 @@
 		(descr "Through hole straight pin header, 2x04, 2.54mm pitch, double rows")
 		(tags "Through hole pin header THT 2x04 2.54mm double row")
 		(property "Reference" "J6"
-			(at 1.27 -2.33 90)
+			(at -2.54 3.81 180)
 			(layer "F.SilkS")
 			(uuid "0ea5ecae-3794-41f5-ac43-0a1919123ee0")
 			(effects
@@ -581,7 +581,7 @@
 		(descr "Through hole straight pin header, 1x06, 2.54mm pitch, single row")
 		(tags "Through hole pin header THT 1x06 2.54mm single row")
 		(property "Reference" "J9"
-			(at 0 -2.33 0)
+			(at 2.54 12.7 90)
 			(layer "F.SilkS")
 			(uuid "f15783f2-4037-41a3-8813-66abbc034cd8")
 			(effects
@@ -935,7 +935,7 @@
 		(descr "Through hole straight pin header, 2x04, 2.54mm pitch, double rows")
 		(tags "Through hole pin header THT 2x04 2.54mm double row")
 		(property "Reference" "J5"
-			(at 1.27 -2.33 90)
+			(at -2.54 3.81 180)
 			(layer "F.SilkS")
 			(uuid "e62f940a-6cf4-4d07-905a-efdbf5bc8f69")
 			(effects
@@ -1341,7 +1341,7 @@
 		(descr "Through hole straight pin header, 2x04, 2.54mm pitch, double rows")
 		(tags "Through hole pin header THT 2x04 2.54mm double row")
 		(property "Reference" "J2"
-			(at 1.27 -2.33 180)
+			(at -2.54 3.81 -90)
 			(layer "F.SilkS")
 			(uuid "c7dd5119-50e4-4840-af2b-7a0b8c45c8ef")
 			(effects
@@ -1747,7 +1747,7 @@
 		(descr "Through hole straight pin header, 2x04, 2.54mm pitch, double rows")
 		(tags "Through hole pin header THT 2x04 2.54mm double row")
 		(property "Reference" "J4"
-			(at 1.27 -2.33 90)
+			(at -2.54 3.81 180)
 			(layer "F.SilkS")
 			(uuid "dd8259e6-6ce4-4727-ab0e-18869683d663")
 			(effects
@@ -2153,7 +2153,7 @@
 		(descr "Through hole straight pin header, 2x04, 2.54mm pitch, double rows")
 		(tags "Through hole pin header THT 2x04 2.54mm double row")
 		(property "Reference" "J1"
-			(at 1.27 -2.33 180)
+			(at -2.54 3.81 -90)
 			(layer "F.SilkS")
 			(uuid "af72bf06-4fdc-4bdd-968a-544c73d533df")
 			(effects
@@ -3611,7 +3611,7 @@
 		(descr "Through hole straight pin header, 1x08, 2.54mm pitch, single row")
 		(tags "Through hole pin header THT 1x08 2.54mm single row")
 		(property "Reference" "J10"
-			(at 0 -2.33 0)
+			(at 0 20.32 0)
 			(layer "F.SilkS")
 			(uuid "dd74e3ac-0f13-4b8f-a24f-abe3199e1ca9")
 			(effects
@@ -3997,7 +3997,7 @@
 		(descr "Mounting Hole 3.2mm, no annular, M3")
 		(tags "mounting hole 3.2mm no annular m3")
 		(property "Reference" "H3"
-			(at 0 -4.2 0)
+			(at 0 4.445 0)
 			(layer "F.SilkS")
 			(uuid "ef070f6a-d53d-47ff-bd74-25a575cc339e")
 			(effects
@@ -4115,7 +4115,7 @@
 		(descr "Through hole straight pin header, 2x04, 2.54mm pitch, double rows")
 		(tags "Through hole pin header THT 2x04 2.54mm double row")
 		(property "Reference" "J3"
-			(at 1.27 -2.33 180)
+			(at -2.54 3.81 -90)
 			(layer "F.SilkS")
 			(uuid "f10a8687-96d0-4980-ab67-6144f2b87c0e")
 			(effects
@@ -4521,7 +4521,7 @@
 		(descr "Mounting Hole 3.2mm, no annular, M3")
 		(tags "mounting hole 3.2mm no annular m3")
 		(property "Reference" "H2"
-			(at 0 -4.2 0)
+			(at 0 4.445 0)
 			(layer "F.SilkS")
 			(uuid "6fbd5731-74d7-4c90-9917-1a95170f86c5")
 			(effects
@@ -4993,7 +4993,7 @@
 		(descr "Mounting Hole 3.2mm, no annular, M3")
 		(tags "mounting hole 3.2mm no annular m3")
 		(property "Reference" "H1"
-			(at 0 -4.2 0)
+			(at 0 4.445 0)
 			(layer "F.SilkS")
 			(uuid "295bf740-19ec-443d-949e-642c066b28e9")
 			(effects
@@ -5111,7 +5111,7 @@
 		(descr "Mounting Hole 3.2mm, no annular, M3")
 		(tags "mounting hole 3.2mm no annular m3")
 		(property "Reference" "H4"
-			(at -6.35 -9.28 0)
+			(at 0 4.445 0)
 			(layer "F.SilkS")
 			(uuid "4d0efcf3-076c-4951-b517-9531b0c95032")
 			(effects
@@ -5229,7 +5229,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C2"
-			(at 0 1.68 -90)
+			(at 2.54 0 -90)
 			(layer "B.SilkS")
 			(uuid "784ff4ef-5a3a-4aa5-b7a0-aa0fe379f204")
 			(effects
@@ -5448,7 +5448,7 @@
 		(descr "SOIC, 8 Pin (JEDEC MS-012AA, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_8.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOIC SO")
 		(property "Reference" "U2"
-			(at 0 3.4 0)
+			(at 2.54 3.4 0)
 			(layer "B.SilkS")
 			(uuid "e3ff3739-a860-4a2f-857e-0b4d57c9b3b8")
 			(effects
@@ -5838,7 +5838,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C6"
-			(at 0 1.68 180)
+			(at 2.55 0 180)
 			(layer "B.SilkS")
 			(uuid "68bbb4cd-9fb3-4053-af21-a80c1f88e8b7")
 			(effects
@@ -6057,7 +6057,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C10"
-			(at 0 1.68 90)
+			(at -3.175 -0.01 90)
 			(layer "B.SilkS")
 			(uuid "663fb1f7-cbab-4121-8555-53bd7df73cd2")
 			(effects
@@ -6276,7 +6276,7 @@
 		(descr "Diode SMA (DO-214AC) Handsoldering")
 		(tags "Diode SMA (DO-214AC) Handsoldering")
 		(property "Reference" "D1"
-			(at 0 2.5 360)
+			(at 1.905 -2.54 0)
 			(layer "B.SilkS")
 			(uuid "4615231d-7a48-493f-bc0f-a0db9fd45918")
 			(effects
@@ -6288,7 +6288,7 @@
 			)
 		)
 		(property "Value" "P4SMAJ5.0A"
-			(at 0 -2.6 360)
+			(at 0 -2.6 0)
 			(layer "B.Fab")
 			(uuid "05e5bd3e-e4aa-45f4-9410-d0db7b78858e")
 			(effects
@@ -6671,7 +6671,7 @@
 			(uuid "ba606241-c9c8-439d-853f-82b689961b8f")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 2.5 360)
+			(at 0 2.5 0)
 			(layer "B.Fab")
 			(uuid "c9cb5837-bb04-4570-a06c-688cac1c62f9")
 			(effects
@@ -6721,7 +6721,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C12"
-			(at 0 1.68 90)
+			(at -3.175 -0.01 90)
 			(layer "B.SilkS")
 			(uuid "ec6b04cc-389e-4975-8450-1c244130a75b")
 			(effects
@@ -6940,7 +6940,7 @@
 		(descr "SOIC, 8 Pin (JEDEC MS-012AA, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_8.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOIC SO")
 		(property "Reference" "U4"
-			(at 0 3.4 90)
+			(at 1.27 3.4 90)
 			(layer "B.SilkS")
 			(uuid "cdcab81b-ccc4-4f22-bc5a-2d3ac1a85af4")
 			(effects
@@ -7330,7 +7330,7 @@
 		(descr "SOIC, 8 Pin (JEDEC MS-012AA, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_8.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOIC SO")
 		(property "Reference" "U5"
-			(at 0 3.4 90)
+			(at 1.27 3.4 90)
 			(layer "B.SilkS")
 			(uuid "3ba83174-f582-49f0-ad2f-ec0c5aa02e3e")
 			(effects
@@ -7720,7 +7720,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C8"
-			(at 0 1.68 0)
+			(at -2.54 0 0)
 			(layer "B.SilkS")
 			(uuid "7351dad2-178a-481d-8823-52b634fba8bd")
 			(effects
@@ -8384,7 +8384,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C1"
-			(at 0 1.68 -90)
+			(at 2.54 0 -90)
 			(layer "B.SilkS")
 			(uuid "9f2b17fc-ff77-498a-9f8a-26de9f814053")
 			(effects
@@ -8603,7 +8603,7 @@
 		(descr "SOIC, 8 Pin (JEDEC MS-012AA, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_8.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOIC SO")
 		(property "Reference" "U3"
-			(at 0 3.4 0)
+			(at 2.54 3.4 0)
 			(layer "B.SilkS")
 			(uuid "8bfa457e-d8a6-458a-91fa-5d47e4a887cf")
 			(effects
@@ -8993,7 +8993,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C9"
-			(at 0 1.68 0)
+			(at 0 1.905 0)
 			(layer "B.SilkS")
 			(uuid "09822a91-4c02-40b2-b794-2958d69ef922")
 			(effects
@@ -9212,7 +9212,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C4"
-			(at 0 1.68 180)
+			(at 2.55 0 180)
 			(layer "B.SilkS")
 			(uuid "ccd78d37-64a9-493c-a8fd-b86cd135b665")
 			(effects
@@ -9431,7 +9431,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C7"
-			(at 0 1.68 0)
+			(at -2.54 0 0)
 			(layer "B.SilkS")
 			(uuid "9c844393-95e7-46ae-8ade-1decf7074923")
 			(effects
@@ -9650,7 +9650,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C5"
-			(at 0 1.68 180)
+			(at 2.55 0 180)
 			(layer "B.SilkS")
 			(uuid "bb320b25-d03d-402e-9b96-521622dc819d")
 			(effects
@@ -9869,7 +9869,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C3"
-			(at 0 1.68 -90)
+			(at 2.54 0 -90)
 			(layer "B.SilkS")
 			(uuid "140e8839-4155-4484-87a1-564d33cd124f")
 			(effects
@@ -10088,7 +10088,7 @@
 		(descr "SOIC, 8 Pin (JEDEC MS-012AA, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_8.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOIC SO")
 		(property "Reference" "U1"
-			(at 0 3.4 0)
+			(at 2.54 3.4 0)
 			(layer "B.SilkS")
 			(uuid "c85cd49e-1889-48e9-88d7-f173137538e4")
 			(effects
@@ -10478,7 +10478,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C11"
-			(at 0 1.68 90)
+			(at -3.175 -0.01 90)
 			(layer "B.SilkS")
 			(uuid "2c2106bd-4e51-4863-9138-c82bbf93e7ff")
 			(effects
@@ -10697,7 +10697,7 @@
 		(descr "SOIC, 8 Pin (JEDEC MS-012AA, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_8.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOIC SO")
 		(property "Reference" "U6"
-			(at 0 3.4 90)
+			(at 1.27 3.4 90)
 			(layer "B.SilkS")
 			(uuid "78eaf3dd-1152-4d8f-86e3-8c9295a0032a")
 			(effects
@@ -11119,6 +11119,318 @@
 		)
 		(layer "Edge.Cuts")
 		(uuid "948238c2-09b1-4194-94ed-eb85854e39b6")
+	)
+	(gr_text "+5V"
+		(at 65.405 107.315 0)
+		(layer "F.SilkS")
+		(uuid "00505271-2ce0-448a-ad35-98e91991db36")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "TX"
+		(at 109.855 109.855 0)
+		(layer "F.SilkS")
+		(uuid "23bf73b0-e34e-44d1-ad60-063c39b8cc55")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
+	)
+	(gr_text "RX"
+		(at 86.995 118.745 90)
+		(layer "F.SilkS")
+		(uuid "26bd9277-c1a4-41e9-b51d-c773c65bd820")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "VCC"
+		(at 109.855 104.775 0)
+		(layer "F.SilkS")
+		(uuid "315d7e26-1492-41a1-9204-c86839f08619")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
+	)
+	(gr_text "VCC"
+		(at 109.855 81.915 0)
+		(layer "F.SilkS")
+		(uuid "3a53e29b-e65e-4aa7-9dff-a4b8b5d4bf39")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
+	)
+	(gr_text "VCC"
+		(at 95.885 118.745 90)
+		(layer "F.SilkS")
+		(uuid "3e5b3f3f-7cb5-42b2-955e-8e12393f1582")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "GND"
+		(at 80.645 118.745 90)
+		(layer "F.SilkS")
+		(uuid "4309b3fd-133b-4153-900b-895334d2e094")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "GND"
+		(at 109.855 100.965 0)
+		(layer "F.SilkS")
+		(uuid "4d0d02c0-c710-44cb-955c-0abec5f89041")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
+	)
+	(gr_text "TX"
+		(at 100.965 118.745 90)
+		(layer "F.SilkS")
+		(uuid "5534b414-0129-4dc3-8453-b38d22b50046")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "GND"
+		(at 103.505 118.745 90)
+		(layer "F.SilkS")
+		(uuid "6c26b408-0cec-4054-a6f2-4cd344b7bed1")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "RX"
+		(at 98.425 118.745 90)
+		(layer "F.SilkS")
+		(uuid "6c9cd940-4c25-4b9d-96c5-6de625aaf5f0")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "VCC"
+		(at 73.025 118.745 90)
+		(layer "F.SilkS")
+		(uuid "6ea839b1-47fa-48ec-a2d3-78ee575bed48")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "RX"
+		(at 109.855 95.885 0)
+		(layer "F.SilkS")
+		(uuid "742fb018-1d44-437a-98bc-7f0c5d858ebc")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
+	)
+	(gr_text "GND"
+		(at 109.855 89.535 0)
+		(layer "F.SilkS")
+		(uuid "790a7238-8a43-4e30-97b4-c7e3c3cec922")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
+	)
+	(gr_text "RX"
+		(at 109.855 84.455 0)
+		(layer "F.SilkS")
+		(uuid "9978c833-3ac1-45ed-8e57-8470f345ac15")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
+	)
+	(gr_text "RX"
+		(at 75.565 118.745 90)
+		(layer "F.SilkS")
+		(uuid "9b3067fe-c529-4d3a-a78a-e7edfa0cd4f9")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "RX"
+		(at 109.855 107.315 0)
+		(layer "F.SilkS")
+		(uuid "a65f7789-f7d2-4ea8-8beb-68f12e0de1c2")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
+	)
+	(gr_text "TX"
+		(at 109.855 86.995 0)
+		(layer "F.SilkS")
+		(uuid "c9593bc4-3eb4-4708-aff9-484827469e6a")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
+	)
+	(gr_text "TX"
+		(at 78.105 118.745 90)
+		(layer "F.SilkS")
+		(uuid "d6fbf89f-0f4d-40fb-8dec-3a5ddc4e6aae")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "VCC"
+		(at 84.455 118.745 90)
+		(layer "F.SilkS")
+		(uuid "d98cfc9f-2d32-4a43-aa92-87c6a39c95c6")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "TX"
+		(at 89.535 118.745 90)
+		(layer "F.SilkS")
+		(uuid "deae386a-6aa3-4907-bb48-dd85177e988f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "+3V3"
+		(at 68.58 107.315 0)
+		(layer "F.SilkS")
+		(uuid "e693171b-8460-4316-94f4-6fafd3ac93eb")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "VCC"
+		(at 109.855 93.345 0)
+		(layer "F.SilkS")
+		(uuid "e9cd308a-7974-4e9e-bd5d-8cdedfd75ba2")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
+	)
+	(gr_text "GND"
+		(at 92.075 118.745 90)
+		(layer "F.SilkS")
+		(uuid "ecb6e6a0-541a-4979-ae01-219d29b96728")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "TX"
+		(at 109.855 98.425 0)
+		(layer "F.SilkS")
+		(uuid "ee338d96-3eb9-4d3a-b7d9-4eb0c2224c5d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
+	)
+	(gr_text "GND"
+		(at 107.95 110.49 0)
+		(layer "F.SilkS")
+		(uuid "fa5096e9-71f4-4dff-b921-f81e7655f342")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify right bottom)
+		)
 	)
 	(dimension
 		(type aligned)
@@ -11920,7 +12232,7 @@
 		(width 0.8)
 		(layer "B.Cu")
 		(net 13)
-		(uuid "406c24d4-8579-42e0-bf43-3ef323c9a624")
+		(uuid "487c6c98-0155-4a71-abc3-eb08674f7320")
 	)
 	(segment
 		(start 81.915 113.03)
@@ -12059,14 +12371,6 @@
 		(uuid "c56dddfd-d4cb-4d2a-abb6-9517ae17e858")
 	)
 	(segment
-		(start 72.2225 112.6275)
-		(end 73.66 112.6275)
-		(width 0.8)
-		(layer "B.Cu")
-		(net 13)
-		(uuid "c5eb971d-92a3-4426-8256-f165680242d8")
-	)
-	(segment
 		(start 71.12 91.44)
 		(end 73.66 88.9)
 		(width 1)
@@ -12105,6 +12409,14 @@
 		(layer "B.Cu")
 		(net 13)
 		(uuid "d63fe6a1-80e6-49ab-9e33-240613efd721")
+	)
+	(segment
+		(start 72.38 112.6275)
+		(end 73.8175 112.6275)
+		(width 0.8)
+		(layer "B.Cu")
+		(net 13)
+		(uuid "db481a8c-262e-4f7e-bf0e-88e1330d8be2")
 	)
 	(segment
 		(start 78.74 88.9)

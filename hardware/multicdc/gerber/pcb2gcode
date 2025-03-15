@@ -1,0 +1,341 @@
+#!/usr/bin/env bash
+
+# settings:
+# double sided: either set DOUBLE_SIDED=1 or leave DOUBLE_SIDED=
+DOUBLE_SIDED=
+# include bridges (useful if you aren't using double sided tape)
+BRIDGES=
+# actual thickness of PCB blank in mm
+PCB_THICKNESS=1.5
+# directory the generated ngc files should be copied to
+DEPLOY_DIR=~/Documents/LAB/CNC/mill/gcode
+
+# stencil outline: should the stencil outline be cut out? Either set
+# STENCIL_OUTLINE=1 or leave STENCIL_OUTLINE=
+STENCIL_OUTLINE=
+# laser turn-on delay in seconds
+LASER_DELAY=0.3
+LASER_POWER=20000
+LASER_FEED=200
+
+shopt -s nullglob
+set -e
+
+function calc() {
+    awk "BEGIN { print $*}"
+}
+
+function die() {
+    echo "$*" 1>&2
+    exit 1
+}
+
+function get_project_name() {
+    drill_files=(./*.drl)
+    if [[ ${#drill_files[@]} -ne 1 ]] ; then
+        die "could not determine project name: " "${drill_files[@]}"
+    fi
+    # print project name to stdout
+    basename "${drill_files[0]}" .drl
+}
+
+
+
+# Generate pcb2gcode config
+function conf() {
+cat <<EOF
+# Set paths to gbr files
+back=$project_name-B_Cu.gbr
+drill=$project_name.drl
+outline=$project_name-Edge_Cuts.gbr
+$(
+if [ -n "$DOUBLE_SIDED" ] ; then
+    cat <<EOF2
+front=$project_name-F_Cu.gbr
+
+# Alignment pins
+# You need to decide where to drill alignment holes.
+# For example, you can put them in the middle of the board.
+mirror-axis=0mm
+EOF2
+fi
+)
+
+# Machine settings
+metric=true
+metricoutput=true
+zsafe=2
+spinup-time=2.5
+zchange=0
+zchange-absolute=true
+g0-vertical-speed=3000
+g0-horizontal-speed=3000
+
+# TODO control vacuum - this is not a good way to do it, because it emits M8/M9
+# each time the tool lifts up to zsafe and plunges back down.
+#pre-milling-gcode=M8
+#post-milling-gcode=M9
+
+# Optimization
+optimise=0.02mm
+#path-finding-limit=?
+# If the trace is already milled, there should be no real re-cutting,
+# so we can probably leave backtrack set to inf (default).
+#backtrack=
+
+
+# Milling
+mill-diameters=1.0mm,0.39mm
+mill-feed=500
+# TODO investigate mill-feed-direction (climb vs conventional)
+mill-vertfeed=120
+mill-speed=20000
+zwork=-0.12
+
+# Multi-pass isolation
+isolation-width=1.0mm
+milling-overlap=50%
+
+# Voronoi mode (not tested)
+#voronoi=true
+#preserve-thermal-reliefs=true
+
+
+# Drilling
+# Even for double sided board, we want to drill from the back side.
+# It might be tempting to drill from the front and use the bit to drill
+# alignment holes, but that would interfere with back side autolevelling.
+drill-side=back
+zdrill=-$(calc $PCB_THICKNESS + 0.25)
+drill-feed=700
+drill-speed=20000
+drills-available=0.8mm:-0.3mm:+0.1mm,1.0mm:-0.2mm:+0.2mm
+
+zmilldrill=-$(calc $PCB_THICKNESS + 0.15)
+milldrill-diameter=1.0
+min-milldrill-hole-diameter=1.2  # TODO need 1.0 for 1mm slots
+# outline (cut-) feeds and speeds are used
+
+# Outline
+cutter-diameter=1.0
+zcut=-$(calc $PCB_THICKNESS + 0.15)
+cut-feed=200
+cut-vertfeed=35
+cut-speed=20000
+cut-infeed=0.85
+cut-side=back
+$(
+if [ -n "$BRIDGES" ] ; then
+    cat <<EOF2
+bridges=1mm
+zbridges=-0.5mm
+bridgesnum=2
+EOF2
+fi
+)
+
+# Autolevelling
+al-back=1
+al-front=1
+software=linuxcnc
+al-x=10mm
+al-y=10mm
+# probing with 3D touch probe should allow us to go faster
+al-probefeed=25  # TODO faster ?? - calculate from controller latency
+# 100 would probably be fine with 3D probe
+al-probecode=G38.2
+# TODO this does not autolevel outline and drilling
+EOF
+}
+
+
+function stencil_conf() {
+cat <<EOF
+# Set paths to gbr files
+back=$project_name-B_Paste.gbr
+$(
+if [ -z "$DOUBLE_SIDED" ] ; then
+    printf "#"
+fi
+echo "front=$project_name-F_Paste.gbr"
+)
+$(
+if [ -z "$STENCIL_OUTLINE" ] ; then
+    printf "#"
+fi
+echo "outline=$project_name-Edge_Cuts.gbr"
+)
+
+
+# Output settings
+back-output=stencil-back.ngc
+front-output=stencil-front.ngc
+# ignore outline
+outline-output=
+
+# Machine settings
+metric=true
+metricoutput=true
+nom6=1
+zsafe=1
+zchange=0
+zchange-absolute=true
+spinup-time=$LASER_DELAY
+spindown-time=0
+g0-vertical-speed=3000
+g0-horizontal-speed=3000
+
+# Optimization
+optimise=0.02mm
+# Do not cut anything other than the pad holes.
+backtrack=0
+
+# Milling (stencil burning)
+invert-gerbers=1
+mill-diameters=0.0mm
+mill-feed=$LASER_FEED
+mill-vertfeed=3000
+mill-speed=$LASER_POWER
+zwork=0
+
+# Outline - we only need some of these settings, we throw out the outline gcode output.
+cutter-diameter=0.0
+zcut=0.0
+cut-feed=$LASER_FEED
+cut-vertfeed=3000
+cut-speed=$LASER_POWER
+cut-infeed=0.5
+cut-side=back
+EOF
+}
+
+
+function get_deploy_dir() {
+    project_dirs=("$DEPLOY_DIR/"*"-${project_name}")
+    n_project_dirs=${#project_dirs[@]}
+    if [[ $n_project_dirs -eq 1 ]] ; then
+        project_dir="${project_dirs[0]}"
+        read -p "overwrite existing project $project_dir? [Yn] " -n 1 -r
+        if [[ $REPLY =~ ^[Yy]?$ ]] ; then
+            echo "$project_dir"
+            return
+        fi
+    fi
+
+    # Create new project dir.
+    if [[ $n_project_dirs -eq 0 ]] ; then
+        echo "$DEPLOY_DIR/$(date -I)-$project_name"
+    else
+        die "failed to match existing deploy dir: " "${project_dirs[@]}"
+    fi
+}
+
+
+function deploy() {
+    prjdir="$(get_deploy_dir)"
+    echo "deploying to $prjdir"
+    mkdir -p "$prjdir"
+    cp ./*.ngc ./*pcb2gcode.log <() "$prjdir/"
+    conf > "$prjdir/millproject"
+    stencil_conf > "$prjdir/stencil-millproject"
+}
+
+
+function has_paste() {
+    test -f "$project_name-B_Paste.gbr"
+}
+
+
+function stencil_generate() {
+    pcb2gcode --config <(stencil_conf) 2>&1 | tee stencil-pcb2gcode.log
+    # remove tool changes,
+    # replace up/down movement with laser on/off commands
+    substitutions="/(Retract to tool change height)\$/d;\
+/^(MSG, Change tool bit/d;\
+/^T[0-9]\\+$/d;\
+/^M0/d;\
+s/^M3.*$/G00 Z0/;\
+s/^G0\\?0\\s*Z1\\(.0*\\)\\?\\s*(\\s*retract\\s*)$/M5/;\
+s/^G0\\?1\\s*Z0\\(.0*\\)\\?\$/M3\nG04 P$LASER_DELAY/g;\
+/G53 G00\\? Z0/d"
+    sed "$substitutions" -i.orig stencil-*.ngc
+}
+
+
+help() {
+    echo "pcb2gcode config generator"
+    echo "Copy this script to your gerber directory, update settings at the top"
+    echo "and run."
+    echo ""
+    echo "usage: $0 [config|deploy|clean]"
+    echo ""
+    echo "  config: emit pcb2gcode config to stdout and exit"
+    echo "  deploy: copy generated ngc files to $DEPLOY_DIR"
+    echo "  clean: clean up files generated by pcb2gcode and exit"
+    echo "  [default]: run pcb2gcode with generated config"
+    echo "  stencil_config: emit pcb2gcode config to stdout and exit"
+}
+
+
+action="run"
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            help
+            exit
+            ;;
+
+        config)
+            action="config"
+            ;;
+
+        stencil_config)
+            action="stencil_config"
+            ;;
+
+        deploy)
+            action="deploy"
+            ;;
+
+        clean)
+            rm -f ./*.svg ./*.ngc ./*.ngc.orig ./*pcb2gcode.log
+            exit
+            ;;
+
+        #-*|--*)
+        *)
+            echo "Unknown option: $1" 1>&2
+            help 1>&2
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+
+project_name=$(get_project_name)
+
+
+case $action in
+    config)
+        conf
+        exit
+        ;;
+
+    stencil_config)
+        stencil_conf
+        exit
+        ;;
+
+    run)
+        pcb2gcode --config <(conf) 2>&1 | tee pcb2gcode.log
+        if has_paste ; then
+            stencil_generate
+        fi
+        ;;
+
+    deploy)
+        deploy
+        ;;
+esac
