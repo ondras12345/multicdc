@@ -42,3 +42,20 @@ west build
 # enter bootloader: press BOOT button, press & release RESET, release BOOT
 west flash
 ```
+
+
+## Udev rules
+```sh
+sudo tee /etc/udev/rules.d/99-multicdc.rules > /dev/null << "EOF"
+SUBSYSTEM=="tty", ENV{ID_VENDOR_ID}=="2fe3", ENV{ID_MODEL_ID}=="6cdc", ENV{ID_USB_INTERFACE_NUM}=="00", SYMLINK+="tty-mcdc0ch0"
+SUBSYSTEM=="tty", ENV{ID_VENDOR_ID}=="2fe3", ENV{ID_MODEL_ID}=="6cdc", ENV{ID_USB_INTERFACE_NUM}=="02", SYMLINK+="tty-mcdc0ch1"
+SUBSYSTEM=="tty", ENV{ID_VENDOR_ID}=="2fe3", ENV{ID_MODEL_ID}=="6cdc", ENV{ID_USB_INTERFACE_NUM}=="04", SYMLINK+="tty-mcdc0ch2"
+SUBSYSTEM=="tty", ENV{ID_VENDOR_ID}=="2fe3", ENV{ID_MODEL_ID}=="6cdc", ENV{ID_USB_INTERFACE_NUM}=="06", SYMLINK+="tty-mcdc0ch3"
+SUBSYSTEM=="tty", ENV{ID_VENDOR_ID}=="2fe3", ENV{ID_MODEL_ID}=="6cdc", ENV{ID_USB_INTERFACE_NUM}=="08", SYMLINK+="tty-mcdc0ch4"
+SUBSYSTEM=="tty", ENV{ID_VENDOR_ID}=="2fe3", ENV{ID_MODEL_ID}=="6cdc", ENV{ID_USB_INTERFACE_NUM}=="0a", SYMLINK+="tty-mcdc0ch5"
+SUBSYSTEM=="tty", ENV{ID_VENDOR_ID}=="2fe3", ENV{ID_MODEL_ID}=="6cdc", ENV{ID_USB_INTERFACE_NUM}=="0c", SYMLINK+="tty-mcdc0shell"
+EOF
+
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
