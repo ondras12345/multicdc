@@ -121,7 +121,7 @@
         pinctrl-names = "default";
 
         compatible = "raspberrypi,pico-uart-pio";
-        current-speed = <115200>;
+        current-speed = <9600>;
         status = "okay";
     };
 
@@ -130,7 +130,7 @@
         pinctrl-names = "default";
 
         compatible = "raspberrypi,pico-uart-pio";
-        current-speed = <115200>;
+        current-speed = <9600>;
         status = "okay";
     };
 };
@@ -143,7 +143,7 @@
         pinctrl-names = "default";
 
         compatible = "raspberrypi,pico-uart-pio";
-        current-speed = <115200>;
+        current-speed = <9600>;
         status = "okay";
     };
 

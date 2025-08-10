@@ -36,7 +36,7 @@ Pin map (most of these can be changed arbitrarily):
 ## Build
 ```sh
 . ~/zephyrproject/.venv/bin/activate
-. ~/zephyrproject/zephyr/zephyr-env.sh 
+. ~/zephyrproject/zephyr/zephyr-env.sh
 west build
 
 # enter bootloader: press BOOT button, press & release RESET, release BOOT
