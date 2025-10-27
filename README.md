@@ -4,6 +4,9 @@ This is a simple RP2040-based 6-channel USB to UART converter.
 This is my first project using the Zephyr RTOS, so there might be lots of
 mistakes. However, it seems to work.
 
+![top side of the MultiCDC pcb](doc/multicdc-PCB-top.png)
+![bottom side of the MultiCDC pcb](doc/multicdc-PCB-bot.png)
+
 
 ## Operation
 The device creates 7 `/dev/ttyACM*` devices when connected to a linux host.
