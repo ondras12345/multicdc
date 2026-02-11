@@ -1,4 +1,5 @@
 /* vim: set filetype=dts : */
+#include <zephyr/dt-bindings/pwm/pwm.h>
 
 /*
 * Copyright (c) 2021 Nordic Semiconductor ASA
@@ -15,6 +16,52 @@
     aliases {
         watchdog0 = &wdt0;
     };
+
+    pwmleds {
+        compatible = "pwm-leds";
+        status = "okay";
+        pwm_led_rgbcct_w: pwm_led_5A {
+            pwms = <&pwm 10 PWM_USEC(100) PWM_POLARITY_NORMAL>;
+            label = "RGBCCT-WW";
+        };
+        pwm_led_rgbcct_c: pwm_led_5B {
+            pwms = <&pwm 11 PWM_USEC(100) PWM_POLARITY_NORMAL>;
+            label = "RGBCCT-CW";
+        };
+        pwm_led_backlight: pwm_led_6A {
+            pwms = <&pwm 12 PWM_USEC(500) PWM_POLARITY_INVERTED>;
+            label = "backlight";
+        };
+        pwm_led_rgbcct_b: pwm_led_6B {
+            // needs to be the same frequency as 6A = backlight
+            pwms = <&pwm 13 PWM_USEC(500) PWM_POLARITY_NORMAL>;
+            label = "RGBCCT-B";
+        };
+        pwm_led_rgbcct_r: pwm_led_7A {
+            pwms = <&pwm 14 PWM_USEC(100) PWM_POLARITY_NORMAL>;
+            label = "RGBCCT-R";
+        };
+        pwm_led_rgbcct_g: pwm_led_7B {
+            pwms = <&pwm 15 PWM_USEC(100) PWM_POLARITY_NORMAL>;
+            label = "RGBCCT-G";
+        };
+    };
+
+    leds {
+        compatible = "gpio-leds";
+        led_backlight_enable: led_29 {
+            gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+            label = "backlight ENA";
+        };
+    };
+};
+
+&pwm {
+    status = "okay";
+    // No need to set frequency for individual slices here, pwm-leds will do it
+    // automatically.
+    pinctrl-0 = <&pwm_default>;
+    pinctrl-names = "default";
 };
 
 &zephyr_udc0 {
@@ -52,6 +99,18 @@
         compatible = "zephyr,cdc-acm-uart";
         label = "Zephyr USB CDC-ACM 6 (log)";
     };
+
+    // We can only have 7 CDCs. This is a fundamental USB limitation.
+    // If we really wanted modbus, we should replace CDC-ACM6 with USB ethernet
+    // and use modbus tcp.
+    //cdc_acm_uart7: cdc_acm_uart7 {
+    //    compatible = "zephyr,cdc-acm-uart";
+    //    label = "Zephyr USB CDC-ACM 7 (modbus)";
+    //    modbus0 {
+    //        compatible = "zephyr,modbus-serial";
+    //        status = "okay";
+    //    };
+    //};
 };
 
 
@@ -108,6 +167,27 @@
         };
         tx_pins {
             pinmux = <PIO1_P10>;
+        };
+    };
+
+    pwm_default: pwm_default {
+        group1 {
+            pinmux = <PWM_5A_P26>;
+        };
+        group2 {
+            pinmux = <PWM_5B_P27>;
+        };
+        group3 {
+            pinmux = <PWM_6A_P28>;
+        };
+        group4 {
+            pinmux = <PWM_6B_P13>;
+        };
+        group5 {
+            pinmux = <PWM_7A_P14>;
+        };
+        group6 {
+            pinmux = <PWM_7B_P15>;
         };
     };
 
@@ -172,4 +252,9 @@
 
 &wdt0 {
     status = "okay";
+};
+
+
+&ws2812 {
+    status = "disabled";
 };
