@@ -9,163 +9,145 @@
 #include <zephyr/logging/log.h>
 //#include <zephyr/modbus/modbus.h>
 #include <zephyr/drivers/gpio.h>
-#include <zephyr/drivers/led.h>
+#include <zephyr/drivers/pwm.h>
 #include <zephyr/shell/shell.h>
 
 LOG_MODULE_REGISTER(multicdc_leds, LOG_LEVEL_DBG);
 
 K_SEM_DEFINE(leds_transition_sem, 0, 1);
 
-#define TRANSITION_PERIOD_MS 10
 #define LEDS_STACK 512
 #define LEDS_PRIO 10  // lower priority than uart
+#define TRANSITION_PERIOD_MS 15
 
 #define MODBUS_NODE DT_COMPAT_GET_ANY_STATUS_OKAY(zephyr_modbus_serial)
 
-static const struct led_dt_spec led_rgbcct_r = LED_DT_SPEC_GET(DT_NODELABEL(pwm_led_rgbcct_r));
-static const struct led_dt_spec led_rgbcct_g = LED_DT_SPEC_GET(DT_NODELABEL(pwm_led_rgbcct_g));
-static const struct led_dt_spec led_rgbcct_b = LED_DT_SPEC_GET(DT_NODELABEL(pwm_led_rgbcct_b));
-static const struct led_dt_spec led_rgbcct_c = LED_DT_SPEC_GET(DT_NODELABEL(pwm_led_rgbcct_c));
-static const struct led_dt_spec led_rgbcct_w = LED_DT_SPEC_GET(DT_NODELABEL(pwm_led_rgbcct_w));
-static const struct led_dt_spec led_backlight = LED_DT_SPEC_GET(DT_NODELABEL(pwm_led_backlight));
-static const struct gpio_dt_spec gpio_backlight_enable = GPIO_DT_SPEC_GET(DT_NODELABEL(led_backlight_enable), gpios);
-
-static const struct led_dt_spec * led_dev[] = {
-    &led_rgbcct_r,
-    &led_rgbcct_g,
-    &led_rgbcct_b,
-    &led_rgbcct_c,
-    &led_rgbcct_w,
-    &led_backlight,
-};
-
 // see tools/leds_gamma.py
-static const uint8_t gamma255_100[] = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 14, 14, 14, 15, 15, 15, 15, 16, 16, 17, 17, 17, 18, 18, 18, 19, 19, 19, 20, 20, 21, 21, 21, 22, 22, 23, 23, 23, 24, 24, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 30, 30, 31, 31, 32, 32, 33, 33, 34, 34, 35, 35, 36, 37, 37, 38, 38, 39, 39, 40, 41, 41, 42, 43, 43, 44, 45, 45, 46, 47, 47, 48, 49, 49, 50, 51, 51, 52, 53, 54, 54, 55, 56, 57, 57, 58, 59, 60, 60, 61, 62, 63, 64, 64, 65, 66, 67, 68, 69, 70, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 94, 95, 96, 97, 98, 99, 100
-};
-static const uint8_t gamma100_100[] = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 11, 11, 12, 13, 14, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 30, 31, 33, 34, 35, 37, 38, 40, 41, 43, 45, 46, 48, 50, 52, 54, 55, 57, 59, 61, 63, 66, 68, 70, 72, 74, 77, 79, 82, 84, 87, 89, 92, 95, 97, 100
+static const uint16_t gamma255_65535[] = {
+    0, 0, 0, 0, 1, 1, 2, 3, 4, 6, 8, 10, 13, 16, 19, 24, 28, 33, 39, 46, 53, 60, 69, 78, 88, 98, 110, 122, 135, 149, 164, 179, 196, 214, 232, 252, 273, 295, 317, 341, 366, 393, 420, 449, 478, 510, 542, 575, 610, 647, 684, 723, 764, 806, 849, 894, 940, 988, 1037, 1088, 1140, 1194, 1250, 1307, 1366, 1427, 1489, 1553, 1619, 1686, 1756, 1827, 1900, 1975, 2051, 2130, 2210, 2293, 2377, 2463, 2552, 2642, 2734, 2829, 2925, 3024, 3124, 3227, 3332, 3439, 3548, 3660, 3774, 3890, 4008, 4128, 4251, 4376, 4504, 4634, 4766, 4901, 5038, 5177, 5319, 5464, 5611, 5760, 5912, 6067, 6224, 6384, 6546, 6711, 6879, 7049, 7222, 7397, 7576, 7757, 7941, 8128, 8317, 8509, 8704, 8902, 9103, 9307, 9514, 9723, 9936, 10151, 10370, 10591, 10816, 11043, 11274, 11507, 11744, 11984, 12227, 12473, 12722, 12975, 13230, 13489, 13751, 14017, 14285, 14557, 14833, 15111, 15393, 15678, 15967, 16259, 16554, 16853, 17155, 17461, 17770, 18083, 18399, 18719, 19042, 19369, 19700, 20034, 20372, 20713, 21058, 21407, 21759, 22115, 22475, 22838, 23206, 23577, 23952, 24330, 24713, 25099, 25489, 25884, 26282, 26683, 27089, 27499, 27913, 28330, 28752, 29178, 29608, 30041, 30479, 30921, 31367, 31818, 32272, 32730, 33193, 33660, 34131, 34606, 35085, 35569, 36057, 36549, 37046, 37547, 38052, 38561, 39075, 39593, 40116, 40643, 41175, 41711, 42251, 42796, 43346, 43899, 44458, 45021, 45588, 46161, 46737, 47319, 47905, 48495, 49091, 49691, 50295, 50905, 51519, 52138, 52761, 53390, 54023, 54661, 55303, 55951, 56604, 57261, 57923, 58590, 59262, 59939, 60621, 61308, 62000, 62697, 63399, 64106, 64818, 65535
 };
 
 struct led_transition {
     // hardware configuration
-    const uint8_t brightness_full;  //< maximum input brightness, 100 or 255
-    const struct led_dt_spec * const led_pwm;  //< PWM channel
+    const struct pwm_dt_spec * const led_pwm;  //< PWM channel
     const struct gpio_dt_spec * const led_power;  //< power switch. Can be NULL.
 
     // internal state
-    int16_t step;  //< brightness step to be added every (interval * TRANSITION_PERIOD_MS)
-    uint16_t interval;  //< how often to add step to brightness
-    uint8_t target;  //< target brightness
-    uint8_t brightness;  //< current brightness
-    uint16_t interval_counter;
+    uint8_t brightness; //< current brightness
+    uint8_t target;     //< target brightness
+    uint8_t start;      //< start brightness (captured at set())
+    uint32_t duration_ms; //< total transition duration
+    uint32_t elapsed_ms;  //< elapsed time
+    bool active;
 };
 
-bool led_transition_done(const struct led_transition * tran)
+void led_transition_start(struct led_transition * t, uint8_t target, uint32_t duration_ms)
 {
-    return (tran->step == 0 ||
-            (tran->step > 0 && tran->brightness >= tran->target) ||
-            (tran->step < 0 && tran->brightness <= tran->target));
-}
+    if (!t) return;
 
-void led_transition_set(struct led_transition * tran, uint8_t target, uint16_t duration_ms)
-{
-    if (!tran) return;
+    t->start = t->brightness;
+    t->target = target;
+    t->duration_ms = duration_ms;
+    t->elapsed_ms = 0;
 
-    uint8_t start = tran->brightness;
-    int16_t diff = target - start;
-    uint16_t duration_periods = duration_ms / TRANSITION_PERIOD_MS;
-    if (duration_periods == 0) duration_periods = 1;
+    if (t->start == t->target) {
+        t->active = false;
+        return;
+    }
 
-    uint16_t interval = duration_periods / abs(diff);
-    if (interval < 1) interval = 1;
+    t->active = true;
 
-    int16_t step = (interval * diff) / duration_periods;
-    if (step == 0) step = (diff > 0) ? 1 : -1;
+    // turn the power on
+    if (t->led_power && (t->start > 0 || t->target > 0)) {
+        (void)gpio_pin_set_dt(t->led_power, 1);
+    }
 
-    LOG_DBG("transition_set interval %u step %d target %u", interval, step, target);
-    tran->interval = interval;
-    tran->step = step;
-    tran->target = target;
-}
-
-void led_transition_start(struct led_transition * tran)
-{
-    if (tran->target > tran->brightness_full) tran->target = tran->brightness_full;
-    if (tran->brightness > tran->brightness_full) tran->brightness = tran->brightness_full;
-
-    if (led_transition_done(tran)) return;
-
-    tran->interval_counter = 0;  // execute immediately
-    // retrieve current brightness
-
-    // turn on power
-    if (tran->led_power) gpio_pin_set_dt(tran->led_power, 1);
-
-    // unblock the transition loop
+    // unblock transition loop
     k_sem_give(&leds_transition_sem);
 }
 
-/// @return true if still running
-bool led_transition_step(struct led_transition * tran)
+void led_transition_apply_brightness(struct led_transition * t)
 {
-    if (!tran || led_transition_done(tran)) return false;
-
-    if (tran->interval_counter > 0) {
-        tran->interval_counter--;
-        return true;
-    }
-    tran->interval_counter = tran->interval;
-
-    int16_t v = tran->brightness + tran->step;
-    if (tran->step > 0 && v >= tran->target) v = tran->target;
-    if (tran->step < 0 && v <= tran->target) v = tran->target;
-    tran->brightness = v;
-
-    // apply gamma correction
-    if (v > tran->brightness_full) v = tran->brightness_full;  // just to be safe
-    if (tran->brightness_full == 100) v = gamma100_100[v];
-    else v = gamma255_100[v];
-
+    if (!t || !t->led_pwm) return;
+    // gamma-compensated brightness 0-65535
+    uint16_t o = gamma255_65535[t->brightness];
     // set led brightness
-    if (tran->led_pwm) led_set_brightness_dt(tran->led_pwm, v);
+    uint32_t pulse = (uint64_t)t->led_pwm->period * o / 65535;
+    pwm_set_pulse_dt(t->led_pwm, pulse);
+}
 
-    if (led_transition_done(tran)) {
-        // we have just finished the transition
-        if (v == 0 && tran->led_power) gpio_pin_set_dt(tran->led_power, 0);
+/**
+ * Execute LED brightness transition. To be called every TRANSITION_PERIOD_MS.
+ * @retval true if still running
+ * @retval false if finished / not active
+ */
+bool led_transition_step(struct led_transition * t)
+{
+    if (!t || !t->active) return false;
+
+    uint64_t elapsed = t->elapsed_ms + TRANSITION_PERIOD_MS;
+
+    if (elapsed >= t->duration_ms) {
+        // finish
+        t->elapsed_ms = t->duration_ms;
+        t->brightness = t->target;
+        led_transition_apply_brightness(t);
+        t->active = false;
+        if (t->brightness == 0 && t->led_power) {
+            (void)gpio_pin_set_dt(t->led_power, 0);
+        }
         return false;
+    }
+
+    t->elapsed_ms = elapsed;
+
+    // Interpolate: b = start + (target-start) * elapsed / duration
+    int16_t delta = (int16_t)t->target - (int16_t)t->start;
+
+    int64_t num = delta * (int64_t)t->elapsed_ms;
+    int64_t den = t->duration_ms;
+    // round-to-nearest
+    int64_t adj = (num >= 0) ? (den / 2u) : -(den / 2u);
+    int64_t b = (int64_t)t->start + (num + adj) / den;
+    uint8_t next = CLAMP(b, 0, 255);
+
+    if (next != t->brightness) {
+        t->brightness = next;
+        led_transition_apply_brightness(t);
     }
     return true;
 }
 
 
+static const struct pwm_dt_spec led_rgbcct_r = PWM_DT_SPEC_GET(DT_NODELABEL(pwm_led_rgbcct_r));
+static const struct pwm_dt_spec led_rgbcct_g = PWM_DT_SPEC_GET(DT_NODELABEL(pwm_led_rgbcct_g));
+static const struct pwm_dt_spec led_rgbcct_b = PWM_DT_SPEC_GET(DT_NODELABEL(pwm_led_rgbcct_b));
+static const struct pwm_dt_spec led_rgbcct_c = PWM_DT_SPEC_GET(DT_NODELABEL(pwm_led_rgbcct_c));
+static const struct pwm_dt_spec led_rgbcct_w = PWM_DT_SPEC_GET(DT_NODELABEL(pwm_led_rgbcct_w));
+static const struct pwm_dt_spec led_backlight = PWM_DT_SPEC_GET(DT_NODELABEL(pwm_led_backlight));
+static const struct gpio_dt_spec gpio_backlight_enable = GPIO_DT_SPEC_GET(DT_NODELABEL(led_backlight_enable), gpios);
+
 static struct led_transition tran_rgbcct_r = {
-    .brightness_full = 255,
     .led_pwm = &led_rgbcct_r,
 };
 
 static struct led_transition tran_rgbcct_g = {
-    .brightness_full = 255,
     .led_pwm = &led_rgbcct_g,
 };
 
 static struct led_transition tran_rgbcct_b = {
-    .brightness_full = 255,
     .led_pwm = &led_rgbcct_b,
 };
 
 static struct led_transition tran_rgbcct_c = {
-    .brightness_full = 255,
     .led_pwm = &led_rgbcct_c,
 };
 
 static struct led_transition tran_rgbcct_w = {
-    .brightness_full = 255,
     .led_pwm = &led_rgbcct_w,
 };
 
 static struct led_transition tran_backlight = {
-    .brightness_full = 255,  // should be 100 for modbus, but we aren't using that
     .led_pwm = &led_backlight,
     .led_power = &gpio_backlight_enable,
 };
@@ -221,25 +203,19 @@ static struct led_transition * led_transitions[] = {
 //    LOG_DBG("HR write, addr %u, value %x", addr, reg);
 //    switch (addr) {
 //        case HR_RGBCCT_DURATION:
-//            led_transition_set(&tran_rgbcct_r, holding_reg[HR_RGBCCT_R], holding_reg[HR_RGBCCT_DURATION]);
-//            led_transition_start(&tran_rgbcct_r);
-//            led_transition_set(&tran_rgbcct_g, holding_reg[HR_RGBCCT_G], holding_reg[HR_RGBCCT_DURATION]);
-//            led_transition_start(&tran_rgbcct_g);
-//            led_transition_set(&tran_rgbcct_b, holding_reg[HR_RGBCCT_B], holding_reg[HR_RGBCCT_DURATION]);
-//            led_transition_start(&tran_rgbcct_b);
-//            led_transition_set(&tran_rgbcct_c, holding_reg[HR_RGBCCT_C], holding_reg[HR_RGBCCT_DURATION]);
-//            led_transition_start(&tran_rgbcct_c);
-//            led_transition_set(&tran_rgbcct_w, holding_reg[HR_RGBCCT_W], holding_reg[HR_RGBCCT_DURATION]);
-//            led_transition_start(&tran_rgbcct_w);
+//            led_transition_start(&tran_rgbcct_r, holding_reg[HR_RGBCCT_R], holding_reg[HR_RGBCCT_DURATION]);
+//            led_transition_start(&tran_rgbcct_g, holding_reg[HR_RGBCCT_G], holding_reg[HR_RGBCCT_DURATION]);
+//            led_transition_start(&tran_rgbcct_b, holding_reg[HR_RGBCCT_B], holding_reg[HR_RGBCCT_DURATION]);
+//            led_transition_start(&tran_rgbcct_c, holding_reg[HR_RGBCCT_C], holding_reg[HR_RGBCCT_DURATION]);
+//            led_transition_start(&tran_rgbcct_w, holding_reg[HR_RGBCCT_W], holding_reg[HR_RGBCCT_DURATION]);
 //            break;
 //
 //        case HR_BACKLIGHT_ENA:
 //        case HR_BACKLIGHT_PWM:
 //        {
-//            uint16_t duty = holding_reg[HR_BACKLIGHT_ENA] ? holding_reg[HR_BACKLIGHT_PWM] : 0;
+//            uint8_t duty = holding_reg[HR_BACKLIGHT_ENA] ? holding_reg[HR_BACKLIGHT_PWM] * 255 / 100 : 0;
 //            uint16_t duration_ms = holding_reg[HR_BACKLIGHT_ENA] ? holding_reg[HR_BACKLIGHT_DURATION] : 0;
-//            led_transition_set(&tran_backlight, duty, duration_ms);
-//            led_transition_start(&tran_backlight);
+//            led_transition_start(&tran_backlight, duty, duration_ms);
 //            break;
 //        }
 //
@@ -290,18 +266,18 @@ static void leds_thread(void *p1, void *p2, void *p3)
     ARG_UNUSED(p2);
     ARG_UNUSED(p3);
 
-    for (int i = 0; i < ARRAY_SIZE(led_dev); i++) {
-        if (!led_is_ready_dt(led_dev[i])) {
-            LOG_ERR("LED%u GPIO device not ready", i);
-            return;
-        }
-        // Some LEDs have inverted PWM (need to be pulled to 3V3 to turn off).
-        // That does not happen until the first set_brightness call.
-        led_set_brightness_dt(led_dev[i], 0);
-    }
     if (!gpio_is_ready_dt(&gpio_backlight_enable)) {
         LOG_ERR("backlight_ENA gpio is not ready");
         return;
+    }
+    for (int i = 0; i < ARRAY_SIZE(led_transitions); i++) {
+        if (!pwm_is_ready_dt(led_transitions[i]->led_pwm)) {
+            LOG_ERR("LED%u PWM device not ready", i);
+            return;
+        }
+        // Some LEDs have inverted PWM (need to be pulled to 3V3 to turn off).
+        // That does not happen until the first pwm_set call.
+        led_transition_apply_brightness(led_transitions[i]);
     }
 
     //holding_reg[HR_BACKLIGHT_DURATION] = 2000;  // default backlight duration
@@ -344,8 +320,6 @@ K_THREAD_DEFINE(leds, LEDS_STACK, leds_thread, NULL, NULL, NULL, LEDS_PRIO, 0, 0
 static int cmd_leds_rgbcct(const struct shell *sh, size_t argc, char **argv)
 {
     uint8_t r,g,b,c,w;
-    uint16_t duration_ms;
-
     int ret = 0;
     r = shell_strtoul(argv[1], 10, &ret);
     if (ret) {
@@ -377,7 +351,7 @@ static int cmd_leds_rgbcct(const struct shell *sh, size_t argc, char **argv)
         return ret;
     }
 
-    duration_ms = shell_strtoul(argv[6], 10, &ret);
+    uint32_t duration_ms = shell_strtoul(argv[6], 10, &ret);
     if (ret) {
         shell_error(sh, "failed to parse duration_ms");
         return ret;
@@ -385,16 +359,11 @@ static int cmd_leds_rgbcct(const struct shell *sh, size_t argc, char **argv)
 
     shell_print(sh, "\n!rgbcct r=%u g=%u b=%u c=%u w=%u duration_ms=%u\n", r, g, b, c, w, duration_ms);
 
-    led_transition_set(&tran_rgbcct_r, r, duration_ms);
-    led_transition_start(&tran_rgbcct_r);
-    led_transition_set(&tran_rgbcct_g, g, duration_ms);
-    led_transition_start(&tran_rgbcct_g);
-    led_transition_set(&tran_rgbcct_b, b, duration_ms);
-    led_transition_start(&tran_rgbcct_b);
-    led_transition_set(&tran_rgbcct_c, c, duration_ms);
-    led_transition_start(&tran_rgbcct_c);
-    led_transition_set(&tran_rgbcct_w, w, duration_ms);
-    led_transition_start(&tran_rgbcct_w);
+    led_transition_start(&tran_rgbcct_r, r, duration_ms);
+    led_transition_start(&tran_rgbcct_g, g, duration_ms);
+    led_transition_start(&tran_rgbcct_b, b, duration_ms);
+    led_transition_start(&tran_rgbcct_c, c, duration_ms);
+    led_transition_start(&tran_rgbcct_w, w, duration_ms);
     return 0;
 }
 SHELL_CMD_ARG_REGISTER(rgbcct, NULL, "Set led strip brightness\nUsage: rgbcct <r> <g> <b> <c> <w> <duration_ms>", cmd_leds_rgbcct, 7, 0);
@@ -410,7 +379,7 @@ static int cmd_leds_backlight(const struct shell *sh, size_t argc, char **argv)
         return ret;
     }
 
-    uint16_t duration_ms = shell_strtoul(argv[2], 10, &ret);
+    uint32_t duration_ms = shell_strtoul(argv[2], 10, &ret);
     if (ret) {
         shell_error(sh, "failed to parse duration_ms");
         return ret;
@@ -418,8 +387,7 @@ static int cmd_leds_backlight(const struct shell *sh, size_t argc, char **argv)
 
     shell_print(sh, "\n!backlight duty=%u duration_ms=%u\n", duty, duration_ms);
 
-    led_transition_set(&tran_backlight, duty, duration_ms);
-    led_transition_start(&tran_backlight);
+    led_transition_start(&tran_backlight, duty, duration_ms);
     return 0;
 }
 SHELL_CMD_ARG_REGISTER(backlight, NULL, "Set backlight LED brightness\nUsage: backlight <duty> <duration_ms>", cmd_leds_backlight, 3, 0);
