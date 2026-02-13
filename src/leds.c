@@ -252,7 +252,7 @@ static int cmd_leds_rgbcct(const struct shell *sh, size_t argc, char **argv)
         return ret;
     }
 
-    shell_print(sh, "\n!rgbcct r=%u g=%u b=%u c=%u w=%u duration_ms=%u\n", r, g, b, c, w, duration_ms);
+    shell_print(sh, "!rgbcct r=%u g=%u b=%u c=%u w=%u duration_ms=%u", r, g, b, c, w, duration_ms);
 
     led_transition_start(&tran_rgbcct_r, r, duration_ms);
     led_transition_start(&tran_rgbcct_g, g, duration_ms);
@@ -266,7 +266,6 @@ SHELL_CMD_ARG_REGISTER(rgbcct, NULL, "Set led strip brightness\nUsage: rgbcct <r
 
 static int cmd_leds_backlight(const struct shell *sh, size_t argc, char **argv)
 {
-
     int ret = 0;
     uint8_t duty = shell_strtoul(argv[1], 10, &ret);
     if (ret) {
@@ -280,9 +279,29 @@ static int cmd_leds_backlight(const struct shell *sh, size_t argc, char **argv)
         return ret;
     }
 
-    shell_print(sh, "\n!backlight duty=%u duration_ms=%u\n", duty, duration_ms);
+    shell_print(sh, "!backlight duty=%u duration_ms=%u", duty, duration_ms);
 
     led_transition_start(&tran_backlight, duty, duration_ms);
     return 0;
 }
 SHELL_CMD_ARG_REGISTER(backlight, NULL, "Set backlight LED brightness\nUsage: backlight <duty> <duration_ms>", cmd_leds_backlight, 3, 0);
+
+
+static int cmd_leds_state(const struct shell *sh, size_t argc, char **argv)
+{
+    shell_print(sh, "!rgbcct r=%u g=%u b=%u c=%u w=%u duration_ms=%u",
+                tran_rgbcct_r.target,
+                tran_rgbcct_g.target,
+                tran_rgbcct_b.target,
+                tran_rgbcct_c.target,
+                tran_rgbcct_w.target,
+                (tran_rgbcct_w.duration_ms - tran_rgbcct_w.elapsed_ms)
+                );
+    shell_print(sh, "!backlight duty=%u duration_ms=%u",
+                tran_backlight.target,
+                (tran_backlight.duration_ms - tran_backlight.elapsed_ms)
+                );
+    shell_print(sh, "!ledstate");
+    return 0;
+}
+SHELL_CMD_REGISTER(ledstate, NULL, "Get LED states", cmd_leds_state);
