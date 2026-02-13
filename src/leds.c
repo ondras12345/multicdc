@@ -7,7 +7,6 @@
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/logging/log.h>
-//#include <zephyr/modbus/modbus.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/pwm.h>
 #include <zephyr/shell/shell.h>
@@ -163,103 +162,6 @@ static struct led_transition * led_transitions[] = {
 };
 
 
-// Modbus was never tested. We don't have enough CDC channels. See note in
-// app.overlay.
-//enum holding_reg {
-//    // RGBCCT will be a Home Assistant template light. Home Assistant uses
-//    // 0-255 brightness values internally, so it is probably best to use them
-//    // here too.
-//    HR_RGBCCT_R = 0,    ///< LED strip red channel brightness 0-255
-//    HR_RGBCCT_G,        ///< LED strip green channel brightness 0-255
-//    HR_RGBCCT_B,        ///< LED strip blue channel brightness 0-255
-//    HR_RGBCCT_C,        ///< LED strip cool while channel brightness 0-255
-//    HR_RGBCCT_W,        ///< LED strip warm white channel brightness 0-255
-//    HR_RGBCCT_DURATION, ///< 0-65535 ms. Writing the duration register starts the transition.
-//    // backlight needs to be compatible with Home Assistant's modbus light
-//    // integration.
-//    // Home Assistant modbus lights use 0-100 brightness, and so does the
-//    // pwm-leds driver.
-//    HR_BACKLIGHT_DURATION, ///< 0-65535ms brightness transition duration
-//    HR_BACKLIGHT_PWM,   ///< backlight brightness 0-100. Writing this value starts the transition.
-//    HR_BACKLIGHT_ENA,   ///< backlight enable 0/1 (disables PWM when 0). Home Assistant modbus light requires this.
-//    HR_COUNT_,          ///< this must be the last value in the enum
-//};
-//
-//static uint16_t holding_reg[HR_COUNT_] = { 0 };
-//
-//static int holding_reg_rd(uint16_t addr, uint16_t *reg)
-//{
-//    if (addr >= ARRAY_SIZE(holding_reg)) return -ENOTSUP;
-//    *reg = holding_reg[addr];
-//    LOG_INF("HR read, addr %u", addr);
-//    return 0;
-//}
-//
-//
-//static int holding_reg_wr(uint16_t addr, uint16_t reg)
-//{
-//    if (addr >= ARRAY_SIZE(holding_reg)) return -ENOTSUP;
-//    holding_reg[addr] = reg;
-//    LOG_DBG("HR write, addr %u, value %x", addr, reg);
-//    switch (addr) {
-//        case HR_RGBCCT_DURATION:
-//            led_transition_start(&tran_rgbcct_r, holding_reg[HR_RGBCCT_R], holding_reg[HR_RGBCCT_DURATION]);
-//            led_transition_start(&tran_rgbcct_g, holding_reg[HR_RGBCCT_G], holding_reg[HR_RGBCCT_DURATION]);
-//            led_transition_start(&tran_rgbcct_b, holding_reg[HR_RGBCCT_B], holding_reg[HR_RGBCCT_DURATION]);
-//            led_transition_start(&tran_rgbcct_c, holding_reg[HR_RGBCCT_C], holding_reg[HR_RGBCCT_DURATION]);
-//            led_transition_start(&tran_rgbcct_w, holding_reg[HR_RGBCCT_W], holding_reg[HR_RGBCCT_DURATION]);
-//            break;
-//
-//        case HR_BACKLIGHT_ENA:
-//        case HR_BACKLIGHT_PWM:
-//        {
-//            uint8_t duty = holding_reg[HR_BACKLIGHT_ENA] ? holding_reg[HR_BACKLIGHT_PWM] * 255 / 100 : 0;
-//            uint16_t duration_ms = holding_reg[HR_BACKLIGHT_ENA] ? holding_reg[HR_BACKLIGHT_DURATION] : 0;
-//            led_transition_start(&tran_backlight, duty, duration_ms);
-//            break;
-//        }
-//
-//        default:
-//            break;
-//    }
-//    return 0;
-//}
-//
-//
-//static struct modbus_user_callbacks mbs_cbs = {
-//    .holding_reg_rd = holding_reg_rd,
-//    .holding_reg_wr = holding_reg_wr,
-//};
-//
-//const static struct modbus_iface_param server_param = {
-//    .mode = MODBUS_MODE_RTU,
-//    .server = {
-//        .user_cb = &mbs_cbs,
-//        .unit_id = 1,
-//    },
-//    .serial = {
-//        .baud = 19200,
-//        .parity = UART_CFG_PARITY_NONE,
-//    },
-//};
-//
-//
-//static int init_modbus_server(void)
-//{
-//    const char iface_name[] = {DEVICE_DT_NAME(MODBUS_NODE)};
-//    int iface;
-//
-//    iface = modbus_iface_get_by_name(iface_name);
-//
-//    if (iface < 0) {
-//        LOG_ERR("Failed to get iface index for %s", iface_name);
-//        return iface;
-//    }
-//
-//    return modbus_init_server(iface, server_param);
-//}
-
-
 static void leds_thread(void *p1, void *p2, void *p3)
 {
     ARG_UNUSED(p1);
@@ -279,13 +181,6 @@ static void leds_thread(void *p1, void *p2, void *p3)
         // That does not happen until the first pwm_set call.
         led_transition_apply_brightness(led_transitions[i]);
     }
-
-    //holding_reg[HR_BACKLIGHT_DURATION] = 2000;  // default backlight duration
-    //int ret = init_modbus_server();
-    //if (ret) {
-    //    LOG_ERR("modbus init failed: %d", ret);
-    //    return;
-    //}
 
     for (;;)
     {

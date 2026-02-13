@@ -101,16 +101,6 @@
     };
 
     // We can only have 7 CDCs. This is a fundamental USB limitation.
-    // If we really wanted modbus, we should replace CDC-ACM6 with USB ethernet
-    // and use modbus tcp.
-    //cdc_acm_uart7: cdc_acm_uart7 {
-    //    compatible = "zephyr,cdc-acm-uart";
-    //    label = "Zephyr USB CDC-ACM 7 (modbus)";
-    //    modbus0 {
-    //        compatible = "zephyr,modbus-serial";
-    //        status = "okay";
-    //    };
-    //};
 };
 
 
