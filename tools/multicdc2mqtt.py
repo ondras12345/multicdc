@@ -117,6 +117,7 @@ def main():
                 if "brightness" in j:
                     brightness = int(j["brightness"])
                 else:
+                    brightness = 255
                     tran_default = 2
             else:
                 brightness = 0
