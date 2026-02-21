@@ -208,9 +208,8 @@ def main():
                     b = int(m.group("b"))
                     c = int(m.group("c"))
                     w = int(m.group("w"))
-                    duration_ms = int(m.group("duration_ms"))
                     msg = json.dumps({
-                        "state": "ON" if max(r,g,b,c,w) > 0 else "OFF",
+                        "state": "ON" if max(r, g, b, c, w) > 0 else "OFF",
                         "color_mode": "rgbww",
                         "color": {
                             "r": r,
@@ -225,7 +224,6 @@ def main():
                         r"!backlight duty=(?P<duty>\d+) duration_ms=(?P<duration_ms>\d+)",
                         line):
                     brightness = int(m.group("duty"))
-                    duration_ms = int(m.group("duration_ms"))
                     msg = json.dumps({
                         "state": "ON" if brightness > 0 else "OFF",
                         "brightness": brightness,
