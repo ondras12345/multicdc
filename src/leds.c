@@ -58,7 +58,8 @@ void led_transition_start(struct led_transition * t, uint8_t target, uint32_t du
 
     // turn the power on
     if (t->led_power && (t->start > 0 || t->target > 0)) {
-        (void)gpio_pin_set_dt(t->led_power, 1);
+        int r = gpio_pin_set_dt(t->led_power, 1);
+        if (r) LOG_ERR("error setting GPIO high: %d", r);
     }
 
     // unblock transition loop
@@ -93,7 +94,8 @@ bool led_transition_step(struct led_transition * t)
         led_transition_apply_brightness(t);
         t->active = false;
         if (t->brightness == 0 && t->led_power) {
-            (void)gpio_pin_set_dt(t->led_power, 0);
+            int r = gpio_pin_set_dt(t->led_power, 0);
+            if (r) LOG_ERR("error setting GPIO low: %d", r);
         }
         return false;
     }
@@ -167,12 +169,21 @@ static void leds_thread(void *p1, void *p2, void *p3)
     ARG_UNUSED(p1);
     ARG_UNUSED(p2);
     ARG_UNUSED(p3);
+    int ret;
 
-    if (!gpio_is_ready_dt(&gpio_backlight_enable)) {
-        LOG_ERR("backlight_ENA gpio is not ready");
-        return;
-    }
     for (int i = 0; i < ARRAY_SIZE(led_transitions); i++) {
+        if (led_transitions[i]->led_power) {
+            if (!gpio_is_ready_dt(led_transitions[i]->led_power)) {
+                LOG_ERR("LED%u GPIO device not ready", i);
+                return;
+            }
+            ret = gpio_pin_configure_dt(led_transitions[i]->led_power, GPIO_OUTPUT_INACTIVE);
+            if (ret) {
+                LOG_ERR("failed to configure LED%u GPIO: %d", i, ret);
+                return;
+            }
+        }
+
         if (!pwm_is_ready_dt(led_transitions[i]->led_pwm)) {
             LOG_ERR("LED%u PWM device not ready", i);
             return;
