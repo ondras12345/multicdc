@@ -9,6 +9,8 @@ import re
 
 _LOGGER = logging.getLogger(__name__)
 
+WW_KELVIN = 3044
+CW_KELVIN = 6675
 
 def main():
     parser = argparse.ArgumentParser(
@@ -172,6 +174,8 @@ def main():
                             "supported_color_modes": ["rgbww"],
                             "brightness": False,
                             "schema": "json",
+                            "min_k": WW_KELVIN,
+                            "max_k": CW_KELVIN,
                             "command_topic": f"{args.topic}/cmnd/rgbcct",
                             "state_topic": f"{args.topic}/stat/rgbcct",
                         },
