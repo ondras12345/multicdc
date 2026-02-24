@@ -12,6 +12,7 @@ _LOGGER = logging.getLogger(__name__)
 WW_KELVIN = 3044
 CW_KELVIN = 6675
 
+
 def main():
     parser = argparse.ArgumentParser(
             add_help=False,  # avoids conflict with -h for hostname
@@ -222,6 +223,7 @@ def main():
                             "c": c,
                             "w": w,
                         },
+                        "brightness": max(r, g, b, c, w),
                     })
                     mqttc.publish(f"{args.topic}/stat/rgbcct", msg.encode('ascii'))
                 elif m := re.fullmatch(
