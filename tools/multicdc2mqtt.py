@@ -225,7 +225,7 @@ def main():
                         },
                         "brightness": max(r, g, b, c, w),
                     })
-                    mqttc.publish(f"{args.topic}/stat/rgbcct", msg.encode('ascii'))
+                    mqttc.publish(f"{args.topic}/stat/rgbcct", msg.encode('ascii'), retain=True)
                 elif m := re.fullmatch(
                         r"!backlight duty=(?P<duty>\d+) duration_ms=(?P<duration_ms>\d+)",
                         line):
@@ -234,7 +234,7 @@ def main():
                         "state": "ON" if brightness > 0 else "OFF",
                         "brightness": brightness,
                     })
-                    mqttc.publish(f"{args.topic}/stat/backlight", msg.encode('ascii'))
+                    mqttc.publish(f"{args.topic}/stat/backlight", msg.encode('ascii'), retain=True)
 
                 elif line == "!ledstate":
                     # full LED state info received, we only do this after MQTT
