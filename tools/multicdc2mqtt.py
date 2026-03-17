@@ -95,7 +95,7 @@ def main():
                 g = int(col.get('g', 0))
                 b = int(col.get('b', 0))
                 c = int(col.get('c', 0))
-                w = int(col.get('w', j.get('brightness', 127)))
+                w = int(col.get('w', j.get('brightness', 200)))
                 if not col and "brightness" not in j:
                     # only ON command was sent, let's do it gradually
                     tran_default = 2
